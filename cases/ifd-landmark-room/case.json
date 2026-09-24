@@ -1,0 +1,84 @@
+{
+  "name": "ifd-landmark-room",
+  "title": "IFD 路标室：TIFF/GeoTIFF 目录图、块数据与地理变换证据",
+  "narrative": "影像数据团队导入 TIFF 字节、多级 IFD、tile/strip 与 GeoKey，审查像素存储与地理参考的来源链。初始导入完整保留大小端、classic/BigTIFF、tag 原值、外部值偏移、IFD 链、tile/strip 范围与 GeoKey 版本；随后一次参数修订、一次局部源数据改动与一次互相冲突的人工决定，全部写入事件历史。",
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "import",
+      "summary": "导入基线并核对七项保留清单",
+      "sample": "baseline-landmark"
+    },
+    {
+      "id": "s2",
+      "kind": "verify",
+      "summary": "基线核对：大小端/变体/tag 原值/外部偏移/IFD 链/tile 范围/GeoKey 版本",
+      "sample": "baseline-landmark"
+    },
+    {
+      "id": "s3",
+      "kind": "revise-params",
+      "summary": "参数修订：IFD 访问预算 256 → 4"
+    },
+    {
+      "id": "s4",
+      "kind": "revise-source",
+      "summary": "局部源改动：仅 tile 字节数变化（产生重叠），geo 派生不应过期",
+      "sample": "baseline-landmark",
+      "parent": "baseline-landmark"
+    },
+    {
+      "id": "s5",
+      "kind": "decide",
+      "summary": "冲突裁定：两位审阅者分别接受不同候选，随后撤销其一",
+      "sample": "geokey-conflict"
+    }
+  ],
+  "expectations": [
+    {
+      "sample": "baseline-landmark",
+      "scenario": "基线保留",
+      "codes": null
+    },
+    {
+      "sample": "bigtiff-wide-offsets",
+      "scenario": "BigTIFF 宽偏移",
+      "codes": null
+    },
+    {
+      "sample": "ifd-cycle",
+      "scenario": "IFD 循环",
+      "codes": [
+        "IFD_CYCLE"
+      ]
+    },
+    {
+      "sample": "shared-subdir",
+      "scenario": "共享子目录",
+      "codes": [
+        "SHARED_SUBIFD"
+      ]
+    },
+    {
+      "sample": "tile-overlap",
+      "scenario": "tile 重叠与缺失",
+      "codes": [
+        "BLOCK_OVERLAP",
+        "BLOCK_MISSING"
+      ]
+    },
+    {
+      "sample": "geokey-conflict",
+      "scenario": "GeoKey 冲突",
+      "codes": []
+    },
+    {
+      "sample": "budget-exhaustion",
+      "scenario": "访问预算耗尽",
+      "codes": [
+        "BUDGET_EXHAUSTED"
+      ],
+      "budget": 4
+    }
+  ]
+}
